@@ -38,3 +38,13 @@ Question_3 <- joined %>% group_by(state) %>% summarise(avg_daily= mean(Temp_diff
 Question_3
 
 #answering question 4#
+joined %>% arrange(desc(lon)) %>% arrange(lon)
+
+#westmost = 9194, eastmost = 40043
+
+filtered <- joined %>%filter(Solar_exposure != '-')
+  
+  mutate(filtered, SE =(as.numeric(filtered$Solar_exposure))) %>% 
+    group_by(Station_number) %>% summarise(avgSE=mean(SE))
+
+#eastmost- with solar exposure at 19.5 avg
