@@ -20,5 +20,9 @@ Question_1
 filterered2<- filter(Bom_seperate, Temp_min !='-', Temp_max != '-')
 filterered2
 ?as.numeric
-as.numeric(filterered2, c('Temp_min'))
-mutate(Bom_seperate, Temp_diff = Temp_max-Temp_min)
+bom_clean <- mutate(filterered2, Temp_minnum = (as.numeric(filterered2$Temp_min)), Temp_maxnum = (as.numeric(filterered2$Temp_max))) %>% 
+  mutate(Temp_diff = Temp_maxnum-Temp_minnum)
+Question_2 <- bom_clean %>% group_by(Year, Month) %>% summarise(avg_daily = mean(Temp_diff))%>% arrange(avg_daily)
+Question_2                                                  
+#March 1980 saw the lowest average daily temperature difference#
+
