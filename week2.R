@@ -45,9 +45,9 @@ Question_3
 
 #arranging my data different ways to find westmost and eastmost points#
 joined %>% arrange(desc(lon)) %>% arrange(lon)
-#westmost = 9194, eastmost = 40043
-#cleaning out data where solar exposure is 
-filtered3 <- joined %>%filter(Solar_exposure != '-')``
+#westmost = 9194, eastmost = 40043#
+#cleaning out data where solar exposure is blank#
+filtered3 <- filter(joined, Solar_exposure != '-')
   mutate(filtered3, SE =(as.numeric(filtered3$Solar_exposure))) %>% 
     group_by(Station_number) %>% summarise(avgSE=mean(SE))
 #eastmost- with solar exposure at 19.5 avg
@@ -58,17 +58,21 @@ filtered3 <- joined %>%filter(Solar_exposure != '-')``
 #start by filering my data
 filtered4 <- filter(Bom_seperate,Solar_exposure != '-')
 #then join this to the tidy data above#
-joined2 <- left_join (bom_clean, Bom_seperate, by = c('Station_number'='Station_number'))
-  
 
-  joined %>% arrange(desc(lon)) %>% arrange(lon)
+joined2 <- left_join (filtered4, num_bom, by = c('Station_number'='Station_number'))
+  
+#arranging my data different ways to find westmost and eastmost points#
+
+  joined2 %>% arrange(desc(lon)) %>% arrange(lon)
   
   #westmost = 9194, eastmost = 40043
   
-  #cleaning out data where solar exposure is 
-  filtered3 <- joined %>%filter(Solar_exposure != '-')
+  #Adding column to make Solar exposure numeric, grouping and summarising to answer question#
   
-  mutate(filtered3, SE =(as.numeric(filtered3$Solar_exposure))) %>% 
+  mutate(joined2, SE =(as.numeric(joined2$Solar_exposure))) %>% 
     group_by(Station_number) %>% summarise(avgSE=mean(SE))
   
   #eastmost- with solar exposure at 19.5 avg
+
+  
+  
