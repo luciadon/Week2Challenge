@@ -58,21 +58,44 @@ filtered3 <- filter(joined, Solar_exposure != '-')
 #start by filering my data
 filtered4 <- filter(Bom_seperate,Solar_exposure != '-')
 #then join this to the tidy data above#
-
 joined2 <- left_join (filtered4, num_bom, by = c('Station_number'='Station_number'))
-  
 #arranging my data different ways to find westmost and eastmost points#
-
   joined2 %>% arrange(desc(lon)) %>% arrange(lon)
-  
   #westmost = 9194, eastmost = 40043
-  
   #Adding column to make Solar exposure numeric, grouping and summarising to answer question#
-  
   mutate(joined2, SE =(as.numeric(joined2$Solar_exposure))) %>% 
     group_by(Station_number) %>% summarise(avgSE=mean(SE))
-  
   #eastmost- with solar exposure at 19.5 avg
 
+  #Challenge putting it all together from easter break
+  
+  library(cowplot)
+  
+  #making all relevant variables numeric
+  bom_cleaner<- bom_clean %>% mutate(rainfallnum=as.numeric(Rainfall)) %>% mutate(Solar_expnum=as.numeric(Solar_exposure))
+  bom_cleaner
+  
+  #relationship between  max & min temp (Q1)
+  plot_1 <- bom_cleaner %>% filter(Station_number == 9225) %>% ggplot(aes(x=Temp_maxnum, y=Temp_minnum))+geom_point()
+  #relationship between max temp & rainfall (Q1)
+  plot_2 <- bom_cleaner %>% filter(Station_number == 9225) %>% ggplot(aes(x=Temp_maxnum, y=rainfallnum))+geom_point()
+  #relationship between max temp & rainfall (Q1)
+  plot_3 <- bom_cleaner %>% filter(Station_number == 9225) %>% ggplot(aes(x=Temp_maxnum, y=Solar_expnum))+geom_point()
+  
+  #now in a single scatterplot (Q2)
+  plot_4 <- bom_cleaner %>% filter(Station_number == 9225) %>% ggplot(aes(x=Temp_maxnum, y=Temp_minnum, colour = Solar_expnum, size = rainfallnum))+geom_point()
+
+  #now as a mult-panel figure (Q3)
+  plot_grid (plot_1,plot_2,plot_3, plot_4)
+  
+  #Q4- Avg monhtly rainfall for each station with a lineplot
+  
+  q4data <- bom_cleaner %>% filter (Rainfall != '-') %>% group_by(Station_number, Month) %>% summarise (avgrainfall=mean(rainfallnum)) %>% 
+   left_join(num_bom, by = c('Station_number'='Station_number'))
+
+  q4data %>% ggplot(aes(x=Month, y=avgrainfall, group = Station_number, colour = name))+geom_line ()+facet_wrap(~state)
+
+  
+  
   
   
